@@ -1,0 +1,104 @@
+# -*- text -*-
+# Copyright (C) 2011 The FreeRADIUS Server project and contributors
+#
+# Version $Id$
+#
+#	DO NOT EDIT THE FILES IN THIS DIRECTORY
+#
+#	The files in this directory are maintained and updated by
+#	the FreeRADIUS project.  Newer releases of software may update
+#	or change these files.
+#
+#	Use the main dictionary file (usually /etc/raddb/dictionary)
+#	for local system attributes and $INCLUDEs.
+#
+#
+#
+#	This file contains dictionary translations for parsing
+#	requests and generating responses.  All transactions are
+#	composed of Attribute/Value Pairs.  The value of each attribute
+#	is specified as one of 4 data types.  Valid data types are:
+#
+#	text       - printable, generally UTF-8 encoded (subset of 'string')
+#	string     - 0-253 octets
+#	ipaddr     - 4 octets in network byte order
+#	integer    - 32 bit value in big endian order (high byte first)
+#	date       - 32 bit value in big endian order - seconds since
+#		     00:00:00 GMT,  Jan.  1,  1970
+#	ifid       - 8 octets in network byte order
+#	ipv6addr   - 16 octets in network byte order
+#	ipv6prefix - 18 octets in network byte order
+#
+#	FreeRADIUS includes extended data types which are not defined
+#	in the RFC's.  These data types are:
+#
+#	abinary - Ascend's binary filter format.
+#	byte    - 8 bit unsigned integer
+#	ether   - 6 octets of hh:hh:hh:hh:hh:hh
+#		  where 'h' is hex digits, upper or lowercase.
+#	short   - 16-bit unsigned integer 
+#	octets  - raw octets, printed and input as hex strings.
+#		  e.g.: 0x123456789abcdef
+#	tlv	- type-length-value (only for certain WiMAX attributes)
+#
+#
+#	Enumerated values are stored in the user file with dictionary
+#	VALUE translations for easy administration.
+#
+#	Example:
+#
+#	ATTRIBUTE	  VALUE
+#	---------------   -----
+#	Framed-Protocol = PPP
+#	7		= 1	(integer encoding)
+#
+
+
+#
+#	Include the RFC dictionaries next.
+#
+#	For a complete list of the standard attributes and values,
+#	see:
+#		http://www.iana.org/assignments/radius-types
+#
+$INCLUDE dictionary.rfc2865
+$INCLUDE dictionary.rfc2866
+$INCLUDE dictionary.rfc2869
+$INCLUDE dictionary.rfc3162
+
+
+#
+#	Miscellaneous attributes defined in weird places that
+#	don't really belong anywhere else...
+#
+ATTRIBUTE	Originating-Line-Info			94	string
+
+#  As defined in draft-sterman-aaa-sip-00.txt
+ATTRIBUTE	Digest-Response				206	string
+ATTRIBUTE	Digest-Attributes			207	octets	# stupid format
+
+#
+#	Integer Translations
+#
+VALUE	Service-Type			Voice			12
+VALUE	Service-Type			Fax			13
+VALUE	Service-Type			Modem-Relay		14
+VALUE	Service-Type			IAPP-Register		15
+VALUE	Service-Type			IAPP-AP-Check		16
+
+VALUE	Framed-Protocol			GPRS-PDP-Context	7
+
+VALUE	NAS-Port-Type			Wireless-CDMA2000	22
+VALUE	NAS-Port-Type			Wireless-UMTS		23
+VALUE	NAS-Port-Type			Wireless-1X-EV		24
+VALUE	NAS-Port-Type			IAPP			25
+
+VALUE   NAS-Port-Type                   FTTP                    26
+VALUE   NAS-Port-Type                   Wireless-802.16         27
+VALUE   NAS-Port-Type                   Wireless-802.20         28
+VALUE   NAS-Port-Type                   Wireless-802.22         29
+
+VALUE   NAS-Port-Type                   xPON                    35
+VALUE   NAS-Port-Type                   Wireless-XGP            36
+
+VALUE	Framed-Protocol			PPTP			9
