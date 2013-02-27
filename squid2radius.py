@@ -1,3 +1,5 @@
+#!/usr/bin/python2
+
 import sys
 import argparse
 from subprocess import call
@@ -11,7 +13,7 @@ parser = argparse.ArgumentParser(description='Analyze squid log by user ' \
 parser.add_argument('logfile_path', help='logfile to analyze')
 parser.add_argument('radius_server')
 parser.add_argument('radius_secret')
-parser.add_argument('-p', '--radius-acct-port', default='1812')
+parser.add_argument('-p', '--radius-acct-port', default='1813')
 parser.add_argument('--radius-nasid', default='squid')
 parser.add_argument('-r', '--rotate', action='store_true', help='rotate log when done')
 parser.add_argument('--squid-path', default='/usr/sbin/squid')
