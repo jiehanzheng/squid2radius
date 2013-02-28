@@ -36,7 +36,7 @@ usage: squid2radius.py [-h] [-p RADIUS_ACCT_PORT]
 For instance, run like this if you have access log file at `/var/log/squid/access.log`, RADIUS server running at `localhost` with secret set to `testing123`:
 
 ```bash
-python2 squid2radius.py /var/log/squid/access.log localhost testing123
+sudo python2 squid2radius.py /var/log/squid/access.log localhost testing123
 ```
 
 It is certainly a good idea to make a cron job for this.
