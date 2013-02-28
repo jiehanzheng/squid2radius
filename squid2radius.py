@@ -1,6 +1,5 @@
 #!/usr/bin/python2
 
-import os
 import sys
 import argparse
 import time
@@ -42,7 +41,7 @@ for i, line in enumerate(logfile):
 
 print "\nSetting up RADIUS server..."
 srv = Client(server=args.radius_server, secret=args.radius_secret,
-             dict=Dictionary(os.path.abspath("dictionary")))
+             dict=Dictionary(sys.path[0] + "/dictionary"))
 
 
 print "Sending..."
