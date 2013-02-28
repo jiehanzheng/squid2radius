@@ -29,7 +29,7 @@ for i, line in enumerate(logfile):
   if i % 1000 == 0: sys.stdout.write('.')
   
   # http://wiki.squid-cache.org/Features/LogFormat
-  _, _, _, _, num_bytes, _, _, rfc931, _, _ = line.split()
+  _, _, _, _, num_bytes, _, _, rfc931, _, _ = line.split()[:10]
   
   if rfc931 == '-': continue
   
