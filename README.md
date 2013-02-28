@@ -32,7 +32,6 @@ usage: squid2radius.py [-h] [-p RADIUS_ACCT_PORT]
                        [--radius-nasid RADIUS_NASID] [-r]
                        [--squid-path SQUID_PATH]
                        logfile_path radius_server radius_secret
-
 ```
 
 For instance, run like this if you have access log file at `/var/log/squid/access.log`, RADIUS server running at `localhost` with secret set to `testing123`:
