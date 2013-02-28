@@ -49,7 +49,7 @@ for username, total_bytes in sum_bytes.iteritems():
   sys.stdout.write(username + ' ' + str(total_bytes))
   sys.stdout.write('.')
 
-  session_id = time.time()
+  session_id = str(time.time())
 
   req = srv.CreateAcctPacket()
   req['User-Name'] = username
