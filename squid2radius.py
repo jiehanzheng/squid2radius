@@ -52,13 +52,22 @@ for username, total_bytes in sum_bytes.iteritems():
   req = srv.CreateAcctPacket()
   req['User-Name'] = username
   req['NAS-Identifier'] = args.radius_nasid
-  req['Acct-Output-Octets'] = total_bytes
+  req['Acct-Status-Type'] = 1  # Start
+
+  reply = srv.SendPacket(req)
+  if not reply.code == pyrad.packet.AccountingResponse:
+    raise Exception("mysterious RADIUS server response to Start packet")
 
   sys.stdout.write('.')
-  reply = srv.SendPacket(req)
 
+  req = srv.CreateAcctPacket()
+  req['User-Name'] = username
+  req['NAS-Identifier'] = args.radius_nasid
+  req['Acct-Output-Octets'] = total_bytes
+
+  reply = srv.SendPacket(req)
   if not reply.code == pyrad.packet.AccountingResponse:
-    raise Exception("mysterious RADIUS server response")
+    raise Exception("mysterious RADIUS server response to Stop packet")
 
   sys.stdout.write('.')
 
