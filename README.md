@@ -42,3 +42,9 @@ sudo python2 squid2radius.py /var/log/squid/access.log localhost testing123
 It is certainly a good idea to make a cron job for this.
 
 You should also read [SquidFaq/SquidLogs](http://wiki.squid-cache.org/SquidFaq/SquidLogs#access.log) to make sure your log files are in reasonable sizes.
+
+Note
+----
+
+The script assumes that you are using the default [Squid native access.log format](http://wiki.squid-cache.org/Features/LogFormat#squid) on first ten columns of your log file.  If you need custom columns, add them after the default ones.
+
