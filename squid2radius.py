@@ -50,6 +50,7 @@ for username, total_bytes in sum_bytes.iteritems():
   sys.stdout.write('.')
 
   req = srv.CreateAcctPacket()
+  req['User-Name'] = username
   req['NAS-Identifier'] = args.radius_nasid
   req['Acct-Output-Octets'] = total_bytes
 
