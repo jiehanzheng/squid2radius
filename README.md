@@ -29,8 +29,7 @@ Usage
 
 ```
 usage: squid2radius.py [-h] [-p RADIUS_ACCT_PORT]
-                       [--radius-nasid RADIUS_NASID] [-r]
-                       [--squid-path SQUID_PATH]
+                       [--radius-nasid RADIUS_NASID] [--squid-path SQUID_PATH]
                        logfile_path radius_server radius_secret
 ```
 
