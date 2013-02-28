@@ -63,6 +63,7 @@ for username, total_bytes in sum_bytes.iteritems():
   req = srv.CreateAcctPacket()
   req['User-Name'] = username
   req['NAS-Identifier'] = args.radius_nasid
+  req['Acct-Status-Type'] = 2  # Stop
   req['Acct-Output-Octets'] = total_bytes
 
   reply = srv.SendPacket(req)
