@@ -1,7 +1,7 @@
 squid2radius
 ============
 
-squid2radius analyzes your squid `access.log` file, and report it to a RADIUS server using `Accounting-Request` as defined in RFC 2866.
+squid2radius analyzes your squid `access.log` file, and report usage information to a RADIUS server using `Accounting-Request` as defined in RFC 2866.
 
 After analyzing is finished, it calls squid to rotate your log file so that no lines will be counted more than once.
 
