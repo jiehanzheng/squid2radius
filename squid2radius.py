@@ -2,6 +2,7 @@
 
 import sys
 import argparse
+import time
 from subprocess import call
 import pyrad.packet
 from pyrad.client import Client
@@ -48,9 +49,12 @@ for username, total_bytes in sum_bytes.iteritems():
   sys.stdout.write(username + ' ' + str(total_bytes))
   sys.stdout.write('.')
 
+  session_id = time.time()
+
   req = srv.CreateAcctPacket()
   req['User-Name'] = username
   req['NAS-Identifier'] = args.radius_nasid
+  req['Acct-Session-Id'] = session_id
   req['Acct-Status-Type'] = 1  # Start
 
   reply = srv.SendPacket(req)
@@ -62,6 +66,7 @@ for username, total_bytes in sum_bytes.iteritems():
   req = srv.CreateAcctPacket()
   req['User-Name'] = username
   req['NAS-Identifier'] = args.radius_nasid
+  req['Acct-Session-Id'] = session_id
   req['Acct-Status-Type'] = 2  # Stop
   req['Acct-Output-Octets'] = total_bytes
 
