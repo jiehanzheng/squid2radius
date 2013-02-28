@@ -70,9 +70,9 @@ for username, total_bytes in sum_bytes.iteritems():
   if not reply.code == pyrad.packet.AccountingResponse:
     raise Exception("mysterious RADIUS server response to Stop packet")
 
-  sys.stdout.write('.')
+  sys.stdout.write(".\n")
 
 
 print "\nRotating squid log..."
-call(args.squid_path, '-k rotate')
+call([args.squid_path, '-k rotate'])
 
