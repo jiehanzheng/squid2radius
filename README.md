@@ -21,7 +21,7 @@ git clone git://github.com/jiehanzheng/squid2radius.git
 sudo pacman -S python2-pip
 
 # install pyrad, command varies if you are on a different OS
-pip2 install pyrad
+sudo pip2 install pyrad
 ```
 
 Usage
