@@ -3,6 +3,7 @@
 import sys
 import argparse
 import time
+import re
 from subprocess import call
 import pyrad.packet
 from pyrad.client import Client
@@ -17,6 +18,10 @@ parser.add_argument('radius_secret')
 parser.add_argument('-p', '--radius-acct-port', default='1813')
 parser.add_argument('--radius-nasid', default='squid')
 parser.add_argument('--squid-path', default='/usr/sbin/squid')
+parser.add_argument('--exclude-pattern', default='', help='do not send to ' \
+                                                          'server if ' \
+                                                          'username contains '\
+                                                          'this regexp')
 args = parser.parse_args()
 
 
@@ -26,7 +31,7 @@ print logfile
 sys.stdout.write("Analyzing")
 sum_bytes = {}
 for i, line in enumerate(logfile):
-  if i % 1000 == 0: sys.stdout.write('.')
+  if i % 1000 == 0: sys.stdout.write('.'); sys.stdout.flush()
   
   # http://wiki.squid-cache.org/Features/LogFormat
   _, _, _, _, num_bytes, _, _, rfc931, _, _ = line.split()[:10]
@@ -44,10 +49,21 @@ srv = Client(server=args.radius_server, secret=args.radius_secret,
              dict=Dictionary(sys.path[0] + "/dictionary"))
 
 
+if args.exclude_pattern:
+  print "Exclusion check has been enabled."
+  exclude_pattern = re.compile(args.exclude_pattern)
+
+
 print "Sending..."
 for username, total_bytes in sum_bytes.iteritems():
   sys.stdout.write(username + ' ' + str(total_bytes))
   sys.stdout.write('.')
+  sys.stdout.flush()
+  
+  if args.exclude_pattern and exclude_pattern.match(username):
+    sys.stdout.write("..skipped!\n")
+    sys.stdout.flush()
+    continue
 
   session_id = str(time.time())
 
@@ -62,6 +78,7 @@ for username, total_bytes in sum_bytes.iteritems():
     raise Exception("mysterious RADIUS server response to Start packet")
 
   sys.stdout.write('.')
+  sys.stdout.flush()
 
   req = srv.CreateAcctPacket()
   req['User-Name'] = username
@@ -75,6 +92,7 @@ for username, total_bytes in sum_bytes.iteritems():
     raise Exception("mysterious RADIUS server response to Stop packet")
 
   sys.stdout.write(".\n")
+  sys.stdout.flush()
 
 
 print "\nRotating squid log..."
