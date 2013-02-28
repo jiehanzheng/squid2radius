@@ -15,7 +15,6 @@ parser.add_argument('radius_server')
 parser.add_argument('radius_secret')
 parser.add_argument('-p', '--radius-acct-port', default='1813')
 parser.add_argument('--radius-nasid', default='squid')
-parser.add_argument('-r', '--rotate', action='store_true', help='rotate log when done')
 parser.add_argument('--squid-path', default='/usr/sbin/squid')
 args = parser.parse_args()
 
@@ -74,5 +73,5 @@ for username, total_bytes in sum_bytes.iteritems():
 
 
 print "\nRotating squid log..."
-call([args.squid_path, '-k rotate'])
+call([args.squid_path, "-k", "rotate"])
 
