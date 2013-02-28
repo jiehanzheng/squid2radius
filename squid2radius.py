@@ -60,7 +60,7 @@ for username, total_bytes in sum_bytes.iteritems():
   sys.stdout.write('.')
   sys.stdout.flush()
   
-  if args.exclude_pattern and exclude_pattern.match(username):
+  if args.exclude_pattern and exclude_pattern.search(username):
     sys.stdout.write("..skipped!\n")
     sys.stdout.flush()
     continue
