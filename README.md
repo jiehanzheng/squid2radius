@@ -30,7 +30,7 @@ Usage
 ```
 usage: squid2radius.py [-h] [-p RADIUS_ACCT_PORT]
                        [--radius-nasid RADIUS_NASID] [--squid-path SQUID_PATH]
-                       [--exclude-pattern EXCLUDE_PATTERN]
+                       [--exclude-pattern EXCLUDE_PATTERN] [--no-rotation]
                        logfile_path radius_server radius_secret
 ```
 
@@ -47,6 +47,10 @@ You should also read [SquidFaq/SquidLogs](http://wiki.squid-cache.org/SquidFaq/S
 ### --exclude-pattern
 
 If for some reason you need to prevent usage information of certain user from being sent to the RADIUS server, there is an argument for that!  Use `--exclude-pattern="(girl|boy)friend"` and squid2radius won't send usage of either your `girlfriend` or `boyfriend` to the RADIUS server.
+
+### --no-rotation
+
+By default squid2radius calls `squid -k rotate` to make squid rotate your log files right after we are done counting usage data, in order to ensure usage data accuracy by not counting any log lines more than once next time you run it.  If this is troublesome in your setup, you can add `--no-rotation` argument to disable this behavior.
 
 Note
 ----

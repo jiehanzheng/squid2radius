@@ -11,17 +11,19 @@ from pyrad.dictionary import Dictionary
 
 
 parser = argparse.ArgumentParser(description='Analyze squid log by user ' \
-                                             'and upload result to RADIUS serv')
+                                             'and upload result to RADIUS ' \
+                                             'server.')
 parser.add_argument('logfile_path', help='logfile to analyze')
 parser.add_argument('radius_server')
 parser.add_argument('radius_secret')
 parser.add_argument('-p', '--radius-acct-port', default='1813')
 parser.add_argument('--radius-nasid', default='squid')
 parser.add_argument('--squid-path', default='/usr/sbin/squid')
-parser.add_argument('--exclude-pattern', default='', help='do not send to ' \
-                                                          'server if ' \
-                                                          'username contains '\
-                                                          'this regexp')
+parser.add_argument('--exclude-pattern', help='do not send to server if ' \
+                                              'username contains this regexp',
+                                         default='')
+parser.add_argument('--no-rotation', help='do not rotate squid log files',
+                                     action='store_true')
 args = parser.parse_args()
 
 
@@ -94,7 +96,7 @@ for username, total_bytes in sum_bytes.iteritems():
   sys.stdout.write(".\n")
   sys.stdout.flush()
 
-
-print "\nRotating squid log..."
-call([args.squid_path, "-k", "rotate"])
+if not args.no_rotation:
+  print "\nRotating squid log..."
+  call([args.squid_path, "-k", "rotate"])
 
