@@ -71,36 +71,31 @@ for username, total_bytes in sum_bytes.iteritems():
 
   session_id = str(time.time())
 
-  req = srv.CreateAcctPacket()
-  req['User-Name'] = username
-  req['NAS-Identifier'] = args.radius_nasid
-  req['Acct-Session-Id'] = session_id
-  req['Acct-Status-Type'] = 1  # Start
-
   try:
+    req = srv.CreateAcctPacket()
+    req['User-Name'] = username
+    req['NAS-Identifier'] = args.radius_nasid
+    req['Acct-Session-Id'] = session_id
+    req['Acct-Status-Type'] = 1  # Start
+
     reply = srv.SendPacket(req)
     if not reply.code == pyrad.packet.AccountingResponse:
       raise Exception("Unexpected response from RADIUS server")
-  except Exception as e:
-    failed_usernames.append((username, e))
-    sys.stdout.write("..FAILED!\n")
+
+    sys.stdout.write('.')
     sys.stdout.flush()
-    continue
 
-  sys.stdout.write('.')
-  sys.stdout.flush()
+    req = srv.CreateAcctPacket()
+    req['User-Name'] = username
+    req['NAS-Identifier'] = args.radius_nasid
+    req['Acct-Session-Id'] = session_id
+    req['Acct-Status-Type'] = 2  # Stop
+    req['Acct-Output-Octets'] = total_bytes
 
-  req = srv.CreateAcctPacket()
-  req['User-Name'] = username
-  req['NAS-Identifier'] = args.radius_nasid
-  req['Acct-Session-Id'] = session_id
-  req['Acct-Status-Type'] = 2  # Stop
-  req['Acct-Output-Octets'] = total_bytes
-
-  try:
     reply = srv.SendPacket(req)
     if not reply.code == pyrad.packet.AccountingResponse:
       raise Exception("Unexpected response from RADIUS server")
+    
   except Exception as e:
     failed_usernames.append((username, e))
     sys.stdout.write("..FAILED!\n")
