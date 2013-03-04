@@ -30,15 +30,19 @@ args = parser.parse_args()
 logfile = open(args.logfile_path)
 print logfile
 
-sys.stdout.write("Analyzing")
+sys.stdout.write("Analyzing.")
 sum_bytes = {}
 for i, line in enumerate(logfile):
-  if i % 1000 == 0: sys.stdout.write('.'); sys.stdout.flush()
+  if i % 10000 == 0: sys.stdout.write('.'); sys.stdout.flush()
   
   # http://wiki.squid-cache.org/Features/LogFormat
-  _, _, _, _, num_bytes, _, _, rfc931, _, _ = line.split()[:10]
+  _, _, _, code_status, num_bytes, _, _, rfc931, _, _ = line.split()[:10]
   
+  # unauthorized user
   if rfc931 == '-': continue
+
+  # wrong username and/or password
+  if code_status.split('/')[1] == '407': continue
   
   try:
     sum_bytes[rfc931] = sum_bytes[rfc931] + int(num_bytes)
@@ -46,17 +50,15 @@ for i, line in enumerate(logfile):
     sum_bytes[rfc931] = int(num_bytes)
 
 
-print "\nSetting up RADIUS server..."
+print "\nSending..."
 srv = Client(server=args.radius_server, secret=args.radius_secret,
              dict=Dictionary(sys.path[0] + "/dictionary"))
-
 
 if args.exclude_pattern:
   print "Exclusion check has been enabled."
   exclude_pattern = re.compile(args.exclude_pattern)
 
-
-print "Sending..."
+failed_usernames = []
 for username, total_bytes in sum_bytes.iteritems():
   sys.stdout.write(username + ' ' + str(total_bytes))
   sys.stdout.write('.')
@@ -75,9 +77,15 @@ for username, total_bytes in sum_bytes.iteritems():
   req['Acct-Session-Id'] = session_id
   req['Acct-Status-Type'] = 1  # Start
 
-  reply = srv.SendPacket(req)
-  if not reply.code == pyrad.packet.AccountingResponse:
-    raise Exception("mysterious RADIUS server response to Start packet")
+  try:
+    reply = srv.SendPacket(req)
+    if not reply.code == pyrad.packet.AccountingResponse:
+      raise Exception("Unexpected response from RADIUS server")
+  except Exception as e:
+    failed_usernames.append((username, e))
+    sys.stdout.write("..FAILED!\n")
+    sys.stdout.flush()
+    continue
 
   sys.stdout.write('.')
   sys.stdout.flush()
@@ -89,14 +97,28 @@ for username, total_bytes in sum_bytes.iteritems():
   req['Acct-Status-Type'] = 2  # Stop
   req['Acct-Output-Octets'] = total_bytes
 
-  reply = srv.SendPacket(req)
-  if not reply.code == pyrad.packet.AccountingResponse:
-    raise Exception("mysterious RADIUS server response to Stop packet")
+  try:
+    reply = srv.SendPacket(req)
+    if not reply.code == pyrad.packet.AccountingResponse:
+      raise Exception("Unexpected response from RADIUS server")
+  except Exception as e:
+    failed_usernames.append((username, e))
+    sys.stdout.write("..FAILED!\n")
+    sys.stdout.flush()
+    continue
 
   sys.stdout.write(".\n")
   sys.stdout.flush()
+
 
 if not args.no_rotation:
   print "\nRotating squid log..."
   call([args.squid_path, "-k", "rotate"])
 
+
+if failed_usernames:
+  raise Exception("Unable to send stats for the following user(s):\n  "
+                  + "\n  ".join(fu[0] 
+                                + ' (' + fu[1].__class__.__name__ + ': '
+                                + str(fu[1]) + ')'
+                                for fu in failed_usernames))
