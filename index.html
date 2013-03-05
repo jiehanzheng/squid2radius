@@ -1,0 +1,114 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Squid2radius by jiehanzheng</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/main.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+
+      <header>
+        <h1>Squid2radius</h1>
+        <p>Analyzes your squid access.log file, and reports accounting information (data transfer) to a RADIUS server</p>
+      </header>
+
+      <div id="banner">
+        <span id="logo"></span>
+
+        <a href="https://github.com/jiehanzheng/squid2radius" class="button fork"><strong>View On GitHub</strong></a>
+        <div class="downloads">
+          <span>Downloads:</span>
+          <ul>
+            <li><a href="https://github.com/jiehanzheng/squid2radius/zipball/master" class="button">ZIP</a></li>
+            <li><a href="https://github.com/jiehanzheng/squid2radius/tarball/master" class="button">TAR</a></li>
+          </ul>
+        </div>
+      </div><!-- end banner -->
+
+    <div class="wrapper">
+      <nav>
+        <ul></ul>
+      </nav>
+      <section>
+        <h1>squid2radius</h1>
+
+<p>squid2radius analyzes your squid <code>access.log</code> file, and reports usage information to a RADIUS server using <code>Accounting-Request</code> as defined in RFC 2866.</p>
+
+<p>After analyzing is finished, it calls squid to rotate your log file so that no lines will be counted more than once.</p>
+
+<h2>Installation</h2>
+
+<h3>Clone Git repo</h3>
+
+<div class="highlight"><pre>git clone git://github.com/jiehanzheng/squid2radius.git
+</pre></div>
+
+<h3>Install dependencies</h3>
+
+<div class="highlight"><pre><span class="c"># install pip for python2, command varies if you are on a different OS</span>
+sudo pacman -S python2-pip
+
+<span class="c"># install pyrad, command varies if you are on a different OS</span>
+sudo pip2 install pyrad hurry.filesize
+</pre></div>
+
+<h2>Upgrading to v1.0</h2>
+
+<h3>New dependency <code>hurry.filesize</code>
+</h3>
+
+<p>Note that an dependency <code>hurry.filesize</code> is required since Version 1.0.  Run 
+<code>sudo pip2 install hurry.filesize</code> to install it.</p>
+
+<h2>Usage</h2>
+
+<pre><code>usage: squid2radius.py [-h] [--version] [-p RADIUS_ACCT_PORT]
+                       [--radius-nasid RADIUS_NASID] [--squid-path SQUID_PATH]
+                       [--exclude-pattern EXCLUDE_PATTERN] [--dry-run]
+                       [--no-rotation]
+                       logfile_path radius_server radius_secret
+</code></pre>
+
+<p>For instance, run like this if you have access log file at <code>/var/log/squid/access.log</code>, RADIUS server running at <code>localhost</code> with secret set to <code>testing123</code>:</p>
+
+<div class="highlight"><pre>sudo python2 squid2radius.py /var/log/squid/access.log localhost testing123
+</pre></div>
+
+<p>It is certainly a good idea to make a cron job for this.</p>
+
+<p>You should also read <a href="http://wiki.squid-cache.org/SquidFaq/SquidLogs#access.log">SquidFaq/SquidLogs</a> to make sure your log files are in reasonable sizes.</p>
+
+<h3>--exclude-pattern</h3>
+
+<p>If for some reason you need to prevent usage information of certain user from being sent to the RADIUS server, there is an argument for that!  Use <code>--exclude-pattern="(girl|boy)friend"</code> and squid2radius won't send usage of either your <code>girlfriend</code> or <code>boyfriend</code> to the RADIUS server.</p>
+
+<h3>--dry-run</h3>
+
+<p>If the script is called with this argument, no data will be sent to the server.</p>
+
+<h3>--no-rotation</h3>
+
+<p>By default squid2radius calls <code>squid -k rotate</code> to make squid rotate your log files right after we are done counting usage data, in order to ensure usage data accuracy by not counting any log lines more than once next time you run it.  If this is troublesome in your setup, you can add <code>--no-rotation</code> argument to disable this behavior.</p>
+
+<h2>Note</h2>
+
+<p>The script assumes that you are using the default <a href="http://wiki.squid-cache.org/Features/LogFormat#squid">Squid native access.log format</a> on first ten columns of your log file.  If you need custom columns, add them after the default ones.</p>
+      </section>
+      <footer>
+        <p>Project maintained by <a href="https://github.com/jiehanzheng">jiehanzheng</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="http://twitter.com/#!/michigangraham">mattgraham</a></small></p>
+      </footer>
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>
