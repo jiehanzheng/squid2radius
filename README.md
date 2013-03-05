@@ -21,8 +21,17 @@ git clone git://github.com/jiehanzheng/squid2radius.git
 sudo pacman -S python2-pip
 
 # install pyrad, command varies if you are on a different OS
-sudo pip2 install pyrad
+sudo pip2 install pyrad hurry.filesize
 ```
+
+Upgrading to v1.0
+-----------------
+
+### New dependency `hurry.filesize`
+
+Note that an dependency `hurry.filesize` is required since Version 1.0.  Run 
+`sudo pip2 install hurry.filesize` to install it.
+
 
 Usage
 -----
@@ -47,6 +56,10 @@ You should also read [SquidFaq/SquidLogs](http://wiki.squid-cache.org/SquidFaq/S
 ### --exclude-pattern
 
 If for some reason you need to prevent usage information of certain user from being sent to the RADIUS server, there is an argument for that!  Use `--exclude-pattern="(girl|boy)friend"` and squid2radius won't send usage of either your `girlfriend` or `boyfriend` to the RADIUS server.
+
+### --dry-run
+
+If the script is called with this argument, no data will be sent to the server.
 
 ### --no-rotation
 
